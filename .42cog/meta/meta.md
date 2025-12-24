@@ -56,6 +56,6 @@
 
 ## 相关链接
 
-- 代码仓库: [填写]
-- 部署地址: [填写]
-- 文档地址: [填写]
+- 代码仓库: https://cnb.cool/42edu/42aipr001/project-template-student.git
+- 部署地址: http://localhost:3000 (本地开发) | 可部署至 Vercel/Netlify 等平台
+- 文档地址: docs/ch4-homework/睡眠监测器网站开发报告.md

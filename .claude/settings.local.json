@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Skill(skill-creator)"
+      "Skill(skill-creator)",
+      "Bash(cat:*)",
+      "Bash(git add:*)",
+      "Bash(find:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot",
+      "Bash(pkill:*)",
+      "Bash(lsof:*)",
+      "Bash(npm run dev)"
     ]
   }
 }
