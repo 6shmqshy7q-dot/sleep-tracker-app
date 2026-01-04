@@ -1,147 +1,33 @@
-# CH6-2 数据库对接方案说明
+# CH6（下）实操作业 - 数据库与Web应用对接
 
-## 项目概述
+## 一、对接项目说明
 
-**项目名称**: Next.js + Neon + Drizzle ORM 用户认证系统
-**分支名称**: student-小豪
-**完成日期**: 2026-01-04
+### 1. 选择的项目
+自有Next.js用户认证项目（基于Next.js App Router构建，用于练习数据库对接与用户认证）
 
----
+### 2. 实现的核心功能
+- 用户认证：集成Neon Auth（兼容NextAuth）实现邮箱/密码注册、登录、退出功能；
+- 数据存储：用户注册时，将用户名、加密后的密码、邮箱等信息写入Neon PostgreSQL数据库；
+- 数据读取：用户登录后，从数据库读取并展示用户信息，也可通过API接口查询所有用户数据；
+- 持久化验证：页面刷新后，登录状态和用户数据仍保留，验证数据持久化存储生效。
 
-## 1. 项目源码结构
+### 3. 使用的技术栈
+- 前端/后端框架：Next.js (App Router)
+- 数据库：Neon PostgreSQL（云原生PostgreSQL）
+- ORM工具：Drizzle ORM（数据库结构管理与数据交互）
+- 认证工具：NextAuth.js（兼容Neon Auth）
+- 密码安全：bcrypt（密码加密存储）
+- 环境管理：.env/.env.local（环境变量配置）
 
-```
-📁 project-template-student/
-├── 📁 app/                      # Next.js App Router
-│   ├── page.tsx                 # 首页
-│   ├── 📁 api/                  # API 接口
-│   │   ├── test-db/route.js     # 数据库连接测试
-│   │   ├── test-drizzle/route.js # 用户 CRUD 接口
-│   │   ├── create-tables/route.js # 表创建接口
-│   │   └── 📁 auth/
-│   │       ├── [...nextauth]/route.ts # NextAuth 认证
-│   │       └── register/route.ts      # 用户注册接口
-│   └── 📁 auth/                 # 认证页面
-│       ├── signin/page.tsx      # 登录页
-│       └── signup/page.tsx      # 注册页
-├── 📁 src/
-│   ├── 📁 db/                   # 数据库层
-│   │   ├── index.ts             # Drizzle 客户端配置
-│   │   └── schema.ts            # 数据表 Schema 定义
-│   └── 📁 lib/
-│       └── auth.ts              # NextAuth 配置
-├── drizzle.config.js            # Drizzle ORM 配置
-├── package.json                 # 项目依赖
-└── .env.local                   # 环境变量（不提交）
-```
+## 二、使用的AI模型/工具
+AI Coding Plan：Claude Code v2.0.55
+- 辅助完成Neon数据库连接配置、Drizzle Schema定义；
+- 修复React Hooks顺序报错问题，优化组件架构；
+- 编写数据库交互API接口，验证数据读写功能；
+- 整理项目结构与作业提交文档。
 
----
-
-## 2. 实现的功能
-
-### 2.1 数据库功能
-- [x] Neon PostgreSQL 云数据库连接
-- [x] Drizzle ORM 类型安全查询
-- [x] Users 表设计（id, username, email, password, timestamps）
-- [x] 用户数据 CRUD 操作
-
-### 2.2 认证功能
-- [x] 用户注册（密码 bcrypt 加密）
-- [x] 用户登录（NextAuth.js Credentials Provider）
-- [x] Session 管理
-- [x] 安全的密码存储
-
-### 2.3 API 接口
-| 接口 | 方法 | 功能 |
-|------|------|------|
-| `/api/test-db` | GET | 测试数据库连接 |
-| `/api/test-drizzle` | GET | 查询所有用户 |
-| `/api/test-drizzle` | POST | 创建新用户 |
-| `/api/test-drizzle` | DELETE | 删除测试数据 |
-| `/api/auth/register` | POST | 用户注册 |
-| `/api/auth/[...nextauth]` | * | NextAuth 认证 |
-
----
-
-## 3. 使用的技术栈
-
-### 3.1 前端框架
-- **Next.js 15** - React 全栈框架，App Router 架构
-- **React 19** - UI 组件库
-- **TypeScript** - 类型安全
-
-### 3.2 数据库
-- **Neon** - Serverless PostgreSQL 云数据库
-- **Drizzle ORM** - 类型安全的 TypeScript ORM
-- **@neondatabase/serverless** - Neon HTTP 驱动
-
-### 3.3 认证
-- **NextAuth.js v5** - 认证解决方案
-- **bcrypt** - 密码加密
-
-### 3.4 开发工具
-- **drizzle-kit** - 数据库迁移工具
-- **dotenv** - 环境变量管理
-
----
-
-## 4. 使用的 AI 模型
-
-### 4.1 AI Coding 工具
-- **Claude Code (CLI)** - Anthropic 官方命令行工具
-- **模型版本**: Claude Sonnet 4.5 / minimax-m2
-
-### 4.2 AI 辅助内容
-1. **数据库设计** - Schema 定义、字段类型选择
-2. **代码生成** - API 路由、认证逻辑
-3. **问题排查** - SSL 证书、bcrypt 兼容性问题
-4. **文档编写** - 项目结构说明、README
-
-### 4.3 人机协作模式
-```
-用户需求 → Claude Code 分析 → 代码实现 → 用户验证 → 迭代优化
-```
-
----
-
-## 5. 数据库当前状态
-
-### 5.1 用户表数据（已清理测试数据）
-| ID | 用户名 | 邮箱 | 密码状态 |
-|----|--------|------|----------|
-| 3 | newuser | newuser@example.com | 已加密 |
-| 4 | testuser_final | final@test.com | 已加密 |
-| 5 | 小豪 | 491867316@qq.com | 已加密 |
-
-### 5.2 安全措施
-- 所有密码使用 bcrypt 加密存储
-- 明文测试数据已清理
-- DATABASE_URL 通过环境变量管理，不提交到 Git
-
----
-
-## 6. 运行说明
-
-```bash
-# 1. 安装依赖
-npm install
-
-# 2. 配置环境变量
-cp .env.example .env.local
-# 编辑 .env.local 填入 DATABASE_URL
-
-# 3. 启动开发服务器
-npm run dev
-
-# 4. 测试 API
-curl http://localhost:3001/api/test-drizzle | jq
-```
-
----
-
-## 7. 提交清单
-
-- [x] 项目源码（含数据库对接功能）
-- [x] 对接方案说明文档
-- [x] AI 工具使用说明
-- [x] 本地和远程分支同步
+## 三、核心验证结果
+✅ 数据库连接：DATABASE_URL配置成功，Drizzle ORM与Neon数据库对接正常；
+✅ 用户认证：邮箱/密码注册、登录、退出功能全流程正常；
+✅ 数据交互：用户数据成功写入Neon数据库，读取/展示功能正常；
+✅ 持久化：页面刷新后，登录状态和数据库数据均保留，持久化验证通过。
