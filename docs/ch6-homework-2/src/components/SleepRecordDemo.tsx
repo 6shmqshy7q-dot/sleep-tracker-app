@@ -11,6 +11,7 @@ interface SleepRecord {
   sleepQuality: string;
   duration: number;
   notes?: string;
+  createdAt: string;
 }
 
 export default function SleepRecordDemo() {
