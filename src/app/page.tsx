@@ -1,6 +1,7 @@
- EOF
 
-   cat << 'CONTENT'
+   EOF
+
+   cat << 'CODE'
    import SleepRecordDemo from '@/components/SleepRecordDemo';
 
    export default function Home() {
@@ -11,6 +12,12 @@
        </main>
      );
    }
-   CONTENT
+   CODE
 
    cat << 'EOF'
+
+   5. 提交
+
+   EOF
+
+   Provide fixed page.tsx code
