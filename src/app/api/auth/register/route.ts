@@ -1,10 +1,9 @@
 EOF
 
-   cat << 'CONTENT'
+   cat << 'CODE'
    import { NextRequest, NextResponse } from 'next/server';
    import bcrypt from 'bcryptjs';
 
-   // Mock database functions
    const mockUsers: any[] = [];
 
    async function getUserByEmail(email: string) {
@@ -27,7 +26,6 @@ EOF
      try {
        const { email, username, password } = await request.json();
 
-       // Mock validation
        if (!email || !username || !password) {
          return NextResponse.json(
            { error: 'Missing required fields' },
@@ -35,7 +33,6 @@ EOF
          );
        }
 
-       // Check if user already exists
        const existingUser = await getUserByEmail(email);
        if (existingUser) {
          return NextResponse.json(
@@ -44,10 +41,7 @@ EOF
          );
        }
 
-       // Hash password (mock)
        const passwordHash = await bcrypt.hash(password, 10);
-
-       // Create user
        const user = await createUser(email, username, passwordHash);
 
        return NextResponse.json(
@@ -69,6 +63,12 @@ EOF
        );
      }
    }
-   CONTENT
+   CODE
 
    cat << 'EOF'
+
+   5. 提交
+
+   EOF
+
+   Provide fixed register route code
