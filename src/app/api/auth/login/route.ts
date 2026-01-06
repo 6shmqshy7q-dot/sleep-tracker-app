@@ -2,51 +2,97 @@ EOF
 
    cat << 'CODE'
    import { NextRequest, NextResponse } from 'next/server';
-   import bcrypt from 'bcryptjs';
 
-   const mockUsers: any[] = [];
-
-   async function getUserByEmail(email: string) {
-     return mockUsers.find(u => u.email === email);
-   }
+   const mockSleepRecords: any[] = [];
 
    export async function POST(request: NextRequest) {
      try {
-       const { email, password } = await request.json();
+       const { userId, sleepTime, wakeTime, sleepQuality, notes } = await request.json();
 
-       if (!email || !password) {
+       if (!userId || !sleepTime || !wakeTime || !sleepQuality) {
          return NextResponse.json(
            { error: 'Missing required fields' },
            { status: 400 }
          );
        }
 
-       const user = await getUserByEmail(email);
-       if (!user) {
+       const sleepDate = new Date(sleepTime);
+       const wakeDate = new Date(wakeTime);
+
+       if (isNaN(sleepDate.getTime()) || isNaN(wakeDate.getTime())) {
          return NextResponse.json(
-           { error: 'Invalid credentials' },
-           { status: 401 }
+           { error: 'Invalid time format' },
+           { status: 400 }
          );
        }
 
-       const isValidPassword = await bcrypt.compare(password, user.passwordHash);
-       if (!isValidPassword) {
+       if (wakeDate <= sleepDate) {
          return NextResponse.json(
-           { error: 'Invalid credentials' },
-           { status: 401 }
+           { error: 'Wake time must be after sleep time' },
+           { status: 400 }
          );
        }
+
+       const duration = Math.floor((wakeDate.getTime() - sleepDate.getTime()) / 1000 /
+   60);
+
+       const record = {
+         id: Date.now(),
+         userId,
+         sleepTime,
+         wakeTime,
+         sleepQuality,
+         duration,
+         notes,
+         createdAt: new Date().toISOString()
+       };
+
+       mockSleepRecords.push(record);
+
+       return NextResponse.json(
+         {
+           success: true,
+           record,
+         },
+         { status: 201 }
+       );
+     } catch (error) {
+       console.error('Record sleep error:', error);
+       return NextResponse.json(
+         { error: 'Server error' },
+         { status: 500 }
+       );
+     }
+   }
+
+   export async function GET(request: NextRequest) {
+     try {
+       const { searchParams } = new URL(request.url);
+       const userIdStr = searchParams.get('userId');
+
+       if (!userIdStr) {
+         return NextResponse.json(
+           { error: 'User ID is required' },
+           { status: 400 }
+         );
+       }
+
+       const userId = parseInt(userIdStr, 10);
+       if (isNaN(userId)) {
+         return NextResponse.json(
+           { error: 'Invalid user ID format' },
+           { status: 400 }
+         );
+       }
+
+       const records = mockSleepRecords.filter(r => r.userId === userId);
 
        return NextResponse.json({
          success: true,
-         user: {
-           id: user.id,
-           email: user.email,
-           username: user.username,
-         },
+         records,
        });
      } catch (error) {
-       console.error('Login error:', error);
+       console.error('Get records error:', error);
        return NextResponse.json(
          { error: 'Internal server error' },
          { status: 500 }
@@ -56,9 +102,3 @@ EOF
    CODE
 
    cat << 'EOF'
-
-   5. 提交
-
-   EOF
-
-   Provide fixed login route code
