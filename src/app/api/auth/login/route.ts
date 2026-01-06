@@ -1,10 +1,9 @@
-  EOF
+EOF
 
-   cat << 'CONTENT'
+   cat << 'CODE'
    import { NextRequest, NextResponse } from 'next/server';
    import bcrypt from 'bcryptjs';
 
-   // Mock database
    const mockUsers: any[] = [];
 
    async function getUserByEmail(email: string) {
@@ -15,7 +14,6 @@
      try {
        const { email, password } = await request.json();
 
-       // Mock validation
        if (!email || !password) {
          return NextResponse.json(
            { error: 'Missing required fields' },
@@ -23,7 +21,6 @@
          );
        }
 
-       // Mock user check
        const user = await getUserByEmail(email);
        if (!user) {
          return NextResponse.json(
@@ -32,7 +29,6 @@
          );
        }
 
-       // Mock password check
        const isValidPassword = await bcrypt.compare(password, user.passwordHash);
        if (!isValidPassword) {
          return NextResponse.json(
@@ -57,6 +53,12 @@
        );
      }
    }
-   CONTENT
+   CODE
 
    cat << 'EOF'
+
+   5. 提交
+
+   EOF
+
+   Provide fixed login route code
