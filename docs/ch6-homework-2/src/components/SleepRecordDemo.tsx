@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { authClient } from "@/lib/auth/client";
 
 interface SleepRecord {
   id: number;
@@ -28,288 +27,289 @@ export default function SleepRecordDemo() {
   const [wakeTime, setWakeTime] = useState("");
   const [sleepQuality, setSleepQuality] = useState("好");
   const [notes, setNotes] = useState("");
-  const [records, setRecords] = useState<SleepRecord[]>([]);
+  const [records, setRecords] = useState<SleepRecord[]>([
+    {
+      id: 1,
+      userId: 1,
+      sleepTime: "2026-01-04T22:00:00",
+      wakeTime: "2026-01-05T06:00:00",
+      sleepQuality: "好",
+      duration: 480,
+      notes: "昨晚睡得很好",
+      createdAt: "2026-01-05T07:00:00"
+    }
+  ]);
 
+  // Mock login - no API calls
   const handleLogin = async () => {
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setIsLoggedIn(true);
-        setUser(data.user);
-        setMessage("登录成功！");
-        await loadRecords(data.user.id);
-      } else {
-        setMessage(data.error || "登录失败");
-      }
-    } catch (error: any) {
-      setMessage(`登录失败: ${error.message}`);
-    }
+    setMessage("正在登录...");
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoggedIn(true);
+      setUser({ id: 1, email, username });
+      setMessage("登录成功！");
+    }, 500);
   };
 
+  // Mock register - no API calls
   const handleRegister = async () => {
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, username, password }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setMessage("注册成功！请登录。");
-        setIsRegistering(false);
-      } else {
-        setMessage(data.error || "注册失败");
-      }
-    } catch (error: any) {
-      setMessage(`注册失败: ${error.message}`);
-    }
+    setMessage("正在注册...");
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoggedIn(true);
+      setUser({ id: Date.now(), email, username });
+      setMessage("注册成功！");
+    }, 500);
   };
 
-  const handleLogout = async () => {
+  const handleSubmitRecord = async () => {
+    if (!sleepTime || !wakeTime) {
+      setMessage("请填写完整信息");
+      return;
+    }
+
+    const duration = Math.floor(
+      (new Date(wakeTime).getTime() - new Date(sleepTime).getTime()) / 1000 / 60
+    );
+
+    const newRecord: SleepRecord = {
+      id: Date.now(),
+      userId: user?.id || 1,
+      sleepTime,
+      wakeTime,
+      sleepQuality,
+      duration,
+      notes,
+      createdAt: new Date().toISOString()
+    };
+
+    setRecords([newRecord, ...records]);
+    setMessage("睡眠记录已保存！");
+    setSleepTime("");
+    setWakeTime("");
+    setNotes("");
+  };
+
+  const handleLogout = () => {
     setIsLoggedIn(false);
     setUser(null);
-    setRecords([]);
+    setEmail("");
+    setPassword("");
+    setUsername("");
     setMessage("");
   };
 
-  const loadRecords = async (userId: number) => {
-    try {
-      const response = await fetch(`/api/sleep/record?userId=${userId}`);
-      const data = await response.json();
-
-      if (data.success) {
-        setRecords(data.records);
-      }
-    } catch (error) {
-      console.error("Failed to load records:", error);
-    }
-  };
-
-  const handleRecordSleep = async () => {
-    if (!user) return;
-
-    // 验证表单
-    if (!sleepTime || !wakeTime) {
-      setMessage("请填写入睡时间和起床时间");
-      return;
-    }
-
-    // 验证时间格式
-    const sleepDate = new Date(sleepTime);
-    const wakeDate = new Date(wakeTime);
-
-    if (isNaN(sleepDate.getTime()) || isNaN(wakeDate.getTime())) {
-      setMessage("时间格式不正确，请重新选择");
-      return;
-    }
-
-    // 验证起床时间在入睡时间之后
-    if (wakeDate <= sleepDate) {
-      setMessage("起床时间必须晚于入睡时间");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/sleep/record", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          sleepTime,
-          wakeTime,
-          sleepQuality,
-          notes,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setMessage("睡眠记录添加成功！");
-        setSleepTime("");
-        setWakeTime("");
-        setNotes("");
-        await loadRecords(user.id);
-      } else {
-        setMessage(data.error || "添加失败，请检查输入信息");
-      }
-    } catch (error) {
-      setMessage("添加失败，请重试");
-    }
-  };
-
   return (
-    <section className="py-24 px-6 bg-white/50">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-4 bg-gradient-to-r from-teal-600 to-purple-600 bg-clip-text text-transparent">
-          数据库对接演示
-        </h2>
-        <p className="text-center text-gray-600 mb-12">
-          基于 Neon 数据库 + Drizzle ORM 的真实数据交互
+    <div className="max-w-4xl mx-auto p-6 space-y-8">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-purple-600 bg-clip-text text-transparent">
+          智能睡眠监测器
+        </h1>
+        <p className="text-gray-600">
+          追踪您的睡眠质量，改善睡眠习惯
         </p>
+        <div className="inline-block px-4 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+          🎭 演示模式 - 无需真实数据库
+        </div>
+      </div>
 
-        {!isLoggedIn ? (
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
-            <h3 className="text-2xl font-semibold mb-6 text-center">
-              {isRegistering ? "注册" : "登录"}睡眠监测账户
-            </h3>
+      {/* Auth Section */}
+      {!isLoggedIn ? (
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-200">
+          <h2 className="text-2xl font-semibold mb-6 text-center">
+            {isRegistering ? "用户注册" : "用户登录"}
+          </h2>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                邮箱
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                placeholder="请输入邮箱"
+              />
+            </div>
 
             {isRegistering && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  用户名
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  placeholder="请输入用户名"
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                密码
+              </label>
               <input
-                type="text"
-                placeholder="用户名"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                placeholder="请输入密码"
               />
-            )}
-
-            <input
-              type="email"
-              placeholder="邮箱"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500"
-            />
-
-            <input
-              type="password"
-              placeholder="密码"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500"
-            />
-
-            <div className="flex gap-4">
-              <button
-                onClick={isRegistering ? handleRegister : handleLogin}
-                className="flex-1 bg-gradient-to-r from-teal-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-              >
-                {isRegistering ? "注册" : "登录"}
-              </button>
-              <button
-                onClick={() => {
-                  setIsRegistering(!isRegistering);
-                  setMessage("");
-                }}
-                className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                {isRegistering ? "已有账户？登录" : "没有账户？注册"}
-              </button>
             </div>
+
+            <button
+              onClick={isRegistering ? handleRegister : handleLogin}
+              disabled={!email || !password || (isRegistering && !username)}
+              className="w-full py-3 bg-gradient-to-r from-teal-600 to-purple-600 text-white rounded-lg font-medium hover:from-teal-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {isRegistering ? "注册" : "登录"}
+            </button>
+
+            <p className="text-center text-sm text-gray-600">
+              {isRegistering ? "已有账号？" : "还没有账号？"}
+              <button
+                onClick={() => setIsRegistering(!isRegistering)}
+                className="text-teal-600 hover:text-teal-700 ml-1"
+              >
+                {isRegistering ? "登录" : "注册"}
+              </button>
+            </p>
           </div>
-        ) : (
-          <div className="space-y-8">
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-semibold">
-                  欢迎，{user?.name || user?.email}
-                </h3>
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                >
-                  退出登录
-                </button>
+        </div>
+      ) : (
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-200">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold">
+              欢迎，{user?.username || user?.email}
+            </h2>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              退出登录
+            </button>
+          </div>
+
+          {/* Sleep Record Form */}
+          <div className="space-y-6">
+            <h3 className="text-xl font-medium">记录睡眠数据</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  入睡时间
+                </label>
+                <input
+                  type="datetime-local"
+                  value={sleepTime}
+                  onChange={(e) => setSleepTime(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                />
               </div>
 
-              <h4 className="text-xl font-semibold mb-4">记录睡眠数据</h4>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  起床时间
+                </label>
+                <input
+                  type="datetime-local"
+                  value={wakeTime}
+                  onChange={(e) => setWakeTime(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                睡眠质量
+              </label>
+              <select
+                value={sleepQuality}
+                onChange={(e) => setSleepQuality(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+              >
+                <option value="好">好</option>
+                <option value="中">中</option>
+                <option value="差">差</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                备注（可选）
+              </label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                rows={3}
+                placeholder="记录任何想备注的内容..."
+              />
+            </div>
+
+            <button
+              onClick={handleSubmitRecord}
+              disabled={!sleepTime || !wakeTime}
+              className="w-full py-3 bg-gradient-to-r from-teal-600 to-purple-600 text-white rounded-lg font-medium hover:from-teal-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              保存记录
+            </button>
+          </div>
+
+          {/* Records List */}
+          <div className="mt-8">
+            <h3 className="text-xl font-medium mb-4">睡眠记录</h3>
+
+            {records.length === 0 ? (
+              <p className="text-gray-500 text-center py-8">
+                暂无记录，开始记录您的第一次睡眠吧！
+              </p>
+            ) : (
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">入睡时间</label>
-                  <input
-                    type="datetime-local"
-                    value={sleepTime}
-                    onChange={(e) => setSleepTime(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">起床时间</label>
-                  <input
-                    type="datetime-local"
-                    value={wakeTime}
-                    onChange={(e) => setWakeTime(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">睡眠质量</label>
-                  <select
-                    value={sleepQuality}
-                    onChange={(e) => setSleepQuality(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500"
+                {records.map((record) => (
+                  <div
+                    key={record.id}
+                    className="bg-gradient-to-r from-teal-50 to-purple-50 rounded-lg p-4 border border-teal-100"
                   >
-                    <option value="好">好</option>
-                    <option value="中">中</option>
-                    <option value="差">差</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">备注（可选）</label>
-                  <textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500"
-                    rows={3}
-                  />
-                </div>
-
-                <button
-                  onClick={handleRecordSleep}
-                  className="w-full bg-gradient-to-r from-teal-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-                >
-                  保存睡眠记录
-                </button>
-              </div>
-            </div>
-
-            {records.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
-                <h4 className="text-xl font-semibold mb-6">我的睡眠记录</h4>
-                <div className="space-y-4">
-                  {records.map((record) => (
-                    <div key={record.id} className="p-4 border border-gray-200 rounded-lg">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-medium">
-                            {new Date(record.sleepTime).toLocaleString()} - {new Date(record.wakeTime).toLocaleString()}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            睡眠质量: {record.sleepQuality} | 时长: {Math.floor(record.duration / 60)}小时{record.duration % 60}分钟
-                          </p>
-                          {record.notes && <p className="text-sm text-gray-500 mt-1">{record.notes}</p>}
-                        </div>
-                        <span className="text-xs text-gray-400">
-                          {new Date(record.createdAt).toLocaleDateString()}
-                        </span>
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-1">
+                        <p className="font-medium">
+                          入睡：{new Date(record.sleepTime).toLocaleString()} |
+                          起床：{new Date(record.wakeTime).toLocaleString()}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          睡眠质量: {record.sleepQuality} |
+                          时长: {Math.floor(record.duration / 60)}小时{record.duration % 60}分钟
+                        </p>
+                        {record.notes && (
+                          <p className="text-sm text-gray-500 mt-1">{record.notes}</p>
+                        )}
                       </div>
+                      <span className="text-xs text-gray-400">
+                        {new Date(record.createdAt).toLocaleDateString()}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
-        )}
+        </div>
+      )}
 
-        {message && (
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-            {message}
-          </div>
-        )}
-      </div>
-    </section>
+      {/* Message */}
+      {message && (
+        <div className="fixed bottom-6 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in">
+          {message}
+        </div>
+      )}
+    </div>
   );
 }

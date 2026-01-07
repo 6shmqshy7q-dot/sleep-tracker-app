@@ -1,36 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-
-// Mock database functions
-const mockUsers: any[] = [];
-
-async function getUserByEmail(email: string) {
-  return mockUsers.find(u => u.email === email);
-}
-
-async function createUser(email: string, username: string, passwordHash: string) {
-  const user = {
-    id: Date.now(),
-    email,
-    username,
-    passwordHash,
-    createdAt: new Date().toISOString()
-  };
-  mockUsers.push(user);
-  return user;
-}
+import { createUser, getUserByEmail } from '@/lib/drizzle/queries';
 
 export async function POST(request: NextRequest) {
   try {
     const { email, username, password } = await request.json();
-
-    // Mock validation
-    if (!email || !username || !password) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
 
     // Check if user already exists
     const existingUser = await getUserByEmail(email);
@@ -41,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash password (mock)
+    // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
 
     // Create user

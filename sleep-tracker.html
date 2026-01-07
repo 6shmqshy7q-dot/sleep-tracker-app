@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能睡眠监测器 - 演示版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .demo-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .auth-card {
+            max-width: 400px;
+            margin: 0 auto 20px;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .toggle-text {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+        }
+
+        .toggle-text button {
+            color: #667eea;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-header h2 {
+            margin: 0;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            color: #6c757d;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #e9ecef;
+        }
+
+        .sleep-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .sleep-form h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .records-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .record-item {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .record-time {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .record-details {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌙 智能睡眠监测器</h1>
+            <p>追踪您的睡眠质量，改善睡眠习惯</p>
+            <div class="demo-badge">🎭 演示模式 - 无需真实数据库</div>
+        </div>
+
+        <!-- Auth Section -->
+        <div id="authSection" class="auth-card card">
+            <h2 id="authTitle">用户登录</h2>
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" required placeholder="请输入邮箱">
+                </div>
+                <div class="form-group" id="usernameGroup" style="display: none;">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" required placeholder="请输入密码">
+                </div>
+                <button type="submit" class="btn btn-primary" id="authBtn">登录</button>
+            </form>
+            <div class="toggle-text">
+                <span id="toggleText">还没有账号？</span>
+                <button id="toggleBtn">立即注册</button>
+            </div>
+        </div>
+
+        <!-- Main App Section -->
+        <div id="mainSection" class="hidden">
+            <div class="card">
+                <div class="welcome-header">
+                    <h2 id="welcomeText">欢迎使用</h2>
+                    <button class="logout-btn" onclick="logout()">退出登录</button>
+                </div>
+
+                <!-- Sleep Record Form -->
+                <div class="sleep-form">
+                    <h3>📝 记录睡眠数据</h3>
+                    <form id="sleepForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="sleepTime">入睡时间</label>
+                                <input type="datetime-local" id="sleepTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="wakeTime">起床时间</label>
+                                <input type="datetime-local" id="wakeTime" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sleepQuality">睡眠质量</label>
+                            <select id="sleepQuality" required>
+                                <option value="好">好 😊</option>
+                                <option value="中">中 😐</option>
+                                <option value="差">差 😴</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">备注（可选）</label>
+                            <textarea id="notes" rows="3" placeholder="记录任何想备注的内容..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存记录</button>
+                    </form>
+                </div>
+
+                <!-- Sleep Records -->
+                <div class="records-section">
+                    <h3>📊 睡眠记录</h3>
+                    <div id="recordsList">
+                        <!-- Records will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Toast -->
+    <div id="message" class="message hidden"></div>
+
+    <script>
+        // State management
+        let currentUser = null;
+        let isRegistering = false;
+        let sleepRecords = [
+            {
+                id: 1,
+                sleepTime: "2026-01-04T22:00:00",
+                wakeTime: "2026-01-05T06:00:00",
+                sleepQuality: "好",
+                duration: 480,
+                notes: "昨晚睡得很好",
+                createdAt: "2026-01-05T07:00:00"
+            }
+        ];
+
+        // DOM elements
+        const authSection = document.getElementById('authSection');
+        const mainSection = document.getElementById('mainSection');
+        const authTitle = document.getElementById('authTitle');
+        const authBtn = document.getElementById('authBtn');
+        const toggleText = document.getElementById('toggleText');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const usernameGroup = document.getElementById('usernameGroup');
+        const messageDiv = document.getElementById('message');
+
+        // Initialize
+        init();
+
+        function init() {
+            document.getElementById('authForm').addEventListener('submit', handleAuth);
+            document.getElementById('sleepForm').addEventListener('submit', handleSleepRecord);
+            document.getElementById('toggleBtn').addEventListener('click', toggleAuthMode);
+            displayRecords();
+        }
+
+        function toggleAuthMode() {
+            isRegistering = !isRegistering;
+            authTitle.textContent = isRegistering ? '用户注册' : '用户登录';
+            authBtn.textContent = isRegistering ? '注册' : '登录';
+            toggleText.textContent = isRegistering ? '已有账号？' : '还没有账号？';
+            toggleBtn.textContent = isRegistering ? '立即登录' : '立即注册';
+            usernameGroup.style.display = isRegistering ? 'block' : 'none';
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const username = document.getElementById('username').value;
+
+            if (isRegistering && !username) {
+                showMessage('请填写用户名');
+                return;
+            }
+
+            // Simulate API call
+            showMessage(isRegistering ? '正在注册...' : '正在登录...');
+
+            setTimeout(() => {
+                currentUser = {
+                    id: Date.now(),
+                    email: email,
+                    username: username || email.split('@')[0]
+                };
+
+                authSection.classList.add('hidden');
+                mainSection.classList.remove('hidden');
+                document.getElementById('welcomeText').textContent = `欢迎，${currentUser.username}!`;
+                showMessage(isRegistering ? '注册成功！' : '登录成功！');
+            }, 500);
+        }
+
+        function handleSleepRecord(e) {
+            e.preventDefault();
+            const sleepTime = document.getElementById('sleepTime').value;
+            const wakeTime = document.getElementById('wakeTime').value;
+            const sleepQuality = document.getElementById('sleepQuality').value;
+            const notes = document.getElementById('notes').value;
+
+            const duration = Math.floor((new Date(wakeTime) - new Date(sleepTime)) / 1000 / 60);
+
+            const newRecord = {
+                id: Date.now(),
+                userId: currentUser.id,
+                sleepTime,
+                wakeTime,
+                sleepQuality,
+                duration,
+                notes,
+                createdAt: new Date().toISOString()
+            };
+
+            sleepRecords.unshift(newRecord);
+            displayRecords();
+            document.getElementById('sleepForm').reset();
+            showMessage('睡眠记录已保存！');
+        }
+
+        function displayRecords() {
+            const recordsList = document.getElementById('recordsList');
+
+            if (sleepRecords.length === 0) {
+                recordsList.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">暂无记录，开始记录您的第一次睡眠吧！</p>';
+                return;
+            }
+
+            recordsList.innerHTML = sleepRecords.map(record => {
+                const sleepDate = new Date(record.sleepTime);
+                const wakeDate = new Date(record.wakeTime);
+                const createdDate = new Date(record.createdAt);
+
+                return `
+                    <div class="record-item">
+                        <div class="record-time">
+                            <strong>🕐 入睡：</strong>${sleepDate.toLocaleString()}
+                            <strong>🕑 起床：</strong>${wakeDate.toLocaleString()}
+                        </div>
+                        <div class="record-details">
+                            <strong>💤 睡眠质量：</strong>${record.sleepQuality} |
+                            <strong>⏱️ 时长：</strong>${Math.floor(record.duration / 60)}小时${record.duration % 60}分钟
+                            ${record.notes ? `<br><strong>📝 备注：</strong>${record.notes}` : ''}
+                            <br><strong>📅 记录时间：</strong>${createdDate.toLocaleDateString()}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function logout() {
+            currentUser = null;
+            authSection.classList.remove('hidden');
+            mainSection.classList.add('hidden');
+            document.getElementById('authForm').reset();
+            showMessage('已退出登录');
+        }
+
+        function showMessage(text) {
+            messageDiv.textContent = text;
+            messageDiv.classList.remove('hidden');
+            setTimeout(() => {
+                messageDiv.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
