@@ -19,7 +19,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^9.0.0",  // 关键修改：从 ^8 改成 ^9.0.0
+    "eslint": "^9.0.0",
     "eslint-config-next": "16.0.10"
   }
 }
