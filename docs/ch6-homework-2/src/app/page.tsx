@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import SleepRecordDemo from "@/components/SleepRecordDemo";
+import SmartSleepAssistant from "@/components/SmartSleepAssistant";
 
 export default function Home() {
   const { theme, setTheme } = useTheme();
@@ -1653,8 +1653,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* 数据库对接演示 */}
-      <SleepRecordDemo />
+      {/* 智能睡眠助手演示 */}
+      <SmartSleepAssistant />
 
 
       {/* 页脚 */}
