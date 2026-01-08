@@ -1,11 +1,11 @@
-'use client';
-
 export default function SleepRecordDemo() {
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">智能睡眠记录</h1>
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        <p className="text-gray-700">睡眠监测数据展示区域</p>
+    <div className="p-6 border rounded-lg shadow-sm bg-white">
+      <h3 className="text-xl font-semibold mb-4 text-gray-800">睡眠记录分析</h3>
+      <div className="space-y-3">
+        <p className="text-gray-600">💤 睡眠时长：7.5小时</p>
+        <p className="text-gray-600">📊 深度睡眠占比：28%</p>
+        <p className="text-gray-600">✨ 睡眠质量评分：85/100</p>
       </div>
     </div>
   );

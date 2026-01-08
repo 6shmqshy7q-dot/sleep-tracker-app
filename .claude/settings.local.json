@@ -10,7 +10,8 @@
       "Bash(pkill:*)",
       "Bash(lsof:*)",
       "Bash(npm run dev)",
-      "Bash(vercel whoami:*)"
+      "Bash(vercel whoami:*)",
+      "Bash(gh auth:*)"
     ]
   }
 }
