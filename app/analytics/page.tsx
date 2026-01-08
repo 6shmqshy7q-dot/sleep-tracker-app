@@ -91,7 +91,8 @@ export default function AnalyticsPage() {
         borderRadius: '15px',
       }}>
         <h1>📊 睡眠分析</h1>
-        <div>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          {/* Period Selector */}
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
@@ -108,6 +109,51 @@ export default function AnalyticsPage() {
             <option value="month">近一月</option>
             <option value="year">近一年</option>
           </select>
+
+          {/* Export Button */}
+          <button
+            onClick={() => {
+              const userId = session?.user?.id;
+              if (userId) {
+                const csvUrl = `/api/sleep/export?userId=${userId}&format=csv`;
+                const jsonUrl = `/api/sleep/export?userId=${userId}&format=json`;
+
+                // Create download links
+                const csvLink = document.createElement('a');
+                csvLink.href = csvUrl;
+                csvLink.download = `sleep_data_${new Date().toISOString().split('T')[0]}.csv`;
+                csvLink.click();
+
+                // Also download JSON
+                setTimeout(() => {
+                  const jsonLink = document.createElement('a');
+                  jsonLink.href = jsonUrl;
+                  jsonLink.download = `sleep_data_${new Date().toISOString().split('T')[0]}.json`;
+                  jsonLink.click();
+                }, 500);
+              }
+            }}
+            style={{
+              padding: '8px 16px',
+              background: 'rgba(255,255,255,0.2)',
+              color: 'white',
+              border: '2px solid white',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              transition: 'all 0.3s',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = 'white';
+              e.currentTarget.style.color = '#667eea';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+              e.currentTarget.style.color = 'white';
+            }}
+          >
+            📥 导出数据
+          </button>
         </div>
       </div>
 
@@ -233,6 +279,72 @@ export default function AnalyticsPage() {
               </div>
             </div>
           )}
+
+          {/* Simple Chart Visualization */}
+          <div style={{
+            background: 'white',
+            padding: '30px',
+            borderRadius: '15px',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            marginBottom: '30px',
+          }}>
+            <h2 style={{ marginBottom: '20px' }}>📊 睡眠质量趋势图</h2>
+
+            <div style={{
+              padding: '20px',
+              background: '#f8f9fa',
+              borderRadius: '10px',
+              fontFamily: 'monospace',
+              fontSize: '14px',
+              overflow: 'auto',
+            }}>
+              {(() => {
+                // Generate simple ASCII chart
+                const chartData = analysis.records.slice(0, 10).reverse();
+                if (chartData.length === 0) return <div>暂无数据</div>;
+
+                const maxQuality = 10;
+                const chart = chartData.map((record: any, index: number) => {
+                  const date = new Date(record.sleepTime).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
+                  const quality = record.sleepQuality;
+                  const barLength = Math.floor((quality / maxQuality) * 30);
+                  const bar = '█'.repeat(barLength);
+                  const color = quality >= 8 ? '#28a745' : quality >= 6 ? '#ffc107' : '#dc3545';
+
+                  return (
+                    <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ width: '60px', fontSize: '12px', color: '#666' }}>{date}</span>
+                      <div style={{
+                        height: '20px',
+                        background: '#e9ecef',
+                        borderRadius: '4px',
+                        flex: 1,
+                        position: 'relative',
+                        minWidth: '300px',
+                      }}>
+                        <div style={{
+                          height: '100%',
+                          background: color,
+                          borderRadius: '4px',
+                          width: `${(quality / maxQuality) * 100}%`,
+                          transition: 'width 0.3s ease',
+                        }} />
+                      </div>
+                      <span style={{ width: '30px', textAlign: 'right', fontWeight: 'bold', color }}>{quality}</span>
+                    </div>
+                  );
+                });
+
+                return <div>{chart}</div>;
+              })()}
+            </div>
+
+            <div style={{ marginTop: '15px', fontSize: '12px', color: '#666' }}>
+              <span style={{ marginRight: '15px' }}><span style={{ color: '#28a745' }}>█</span> 优秀 (8-10)</span>
+              <span style={{ marginRight: '15px' }}><span style={{ color: '#ffc107' }}>█</span> 良好 (6-7)</span>
+              <span><span style={{ color: '#dc3545' }}>█</span> 需改善 (1-5)</span>
+            </div>
+          </div>
 
           {/* Records Chart */}
           <div style={{
