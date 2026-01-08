@@ -38,6 +38,19 @@
 - 包含完整睡眠信息
 - 便于外部分析和处理
 
+### ⚙️ 用户设置
+- 个人资料管理（用户名、邮箱）
+- 睡眠目标设置（目标时长、质量）
+- 偏好设置（通知、深色模式）
+- 账户管理（密码修改、数据导出）
+
+### 📱 PWA支持
+- 可安装到手机/桌面
+- 离线使用支持
+- 应用启动画面
+- 全屏显示模式
+- 快捷方式支持
+
 ### 🔐 用户系统
 - 安全的用户注册/登录
 - 个人数据隔离
@@ -55,11 +68,13 @@
 - **React** - 用户界面库
 - **Tailwind CSS** - 样式框架
 - **NextAuth.js** - 认证系统
+- **PWA** - 渐进式Web应用
 
 ### 后端
 - **Next.js API Routes** - 服务端接口
 - **Drizzle ORM** - 数据库操作
 - **Neon PostgreSQL** - 数据库服务
+- **Service Worker** - 离线缓存
 
 ### 部署
 - **Vercel** - 托管平台
@@ -73,17 +88,25 @@ sleep-tracker-app/
 │   ├── page.tsx              # 主页
 │   ├── sleep/page.tsx        # 睡眠记录页
 │   ├── analytics/page.tsx     # 数据分析页
+│   ├── settings/page.tsx      # 用户设置页
 │   └── api/
 │       ├── auth/             # 认证接口
 │       ├── sleep/
 │       │   ├── record/       # 睡眠记录接口
-│       │   └── analysis/     # 睡眠分析接口
+│       │   ├── analysis/     # 睡眠分析接口
+│       │   └── export/       # 数据导出接口
 │       └── ...
 ├── src/
 │   ├── db/
 │   │   ├── schema.ts        # 数据库表结构
 │   │   └── index.ts         # 数据库配置
-│   └── lib/
+│   ├── lib/
+│   └── components/          # 公共组件
+│       └── PWAInstallPrompt.tsx # PWA安装提示
+├── public/
+│   ├── manifest.json        # PWA清单文件
+│   ├── sw.js               # Service Worker
+│   └── icon-192.png        # 应用图标
 ├── RCSW_PRODUCT_SPEC.md      # 产品需求文档
 └── DEPLOYMENT_GUIDE.md      # 部署指南
 ```
@@ -160,6 +183,16 @@ NEXTAUTH_URL=http://localhost:3000
 ### 步骤 1: 注册/登录
 1. 访问 `/auth/signup` 注册新用户
 2. 或访问 `/auth/signin` 登录已有用户
+
+### 步骤 2: PWA安装（推荐）
+1. 首次访问时，会看到安装提示横幅
+2. 点击"安装"按钮，将应用添加到桌面
+3. 享受原生App般的体验！
+
+### 步骤 3: 用户设置
+1. 访问 `/settings` 页面
+2. 设置您的个人资料、睡眠目标、偏好设置
+3. 管理账户信息（密码修改、数据导出等）
 
 ### 步骤 2: 记录睡眠
 1. 访问 `/sleep` 页面
