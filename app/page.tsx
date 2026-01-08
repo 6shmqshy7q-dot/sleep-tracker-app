@@ -79,12 +79,9 @@ function AuthContent() {
         borderRadius: '8px'
       }}>
         <div>
-          <h2>欢迎, {session.user?.username}!</h2>
+          <h2>欢迎使用智能睡眠追踪器 Pro, {session.user?.username}!</h2>
           <p style={{ color: '#666', marginTop: '5px' }}>
             邮箱: {session.user?.email}
-          </p>
-          <p style={{ color: '#666' }}>
-            用户ID: {session.user?.id}
           </p>
         </div>
         <button
@@ -104,58 +101,83 @@ function AuthContent() {
 
       <div style={{ display: 'grid', gap: '20px' }}>
         <div style={{
-          padding: '20px',
+          padding: '30px',
           backgroundColor: '#fff',
           border: '1px solid #ddd',
-          borderRadius: '8px'
+          borderRadius: '15px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
-          <h3>🗄️ 数据库操作</h3>
-          <p style={{ color: '#666', marginTop: '10px' }}>
-            测试 Drizzle ORM 与 Neon PostgreSQL 的连接
+          <h3 style={{ fontSize: '24px', marginBottom: '15px' }}>🌙 睡眠记录</h3>
+          <p style={{ color: '#666', marginBottom: '20px' }}>
+            记录您的每日睡眠时间，追踪睡眠质量，建立良好的睡眠习惯
           </p>
-          <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
+          <div style={{ display: 'flex', gap: '10px' }}>
             <Link
-              href="/api/test-drizzle"
+              href="/sleep"
               style={{
-                padding: '8px 16px',
-                backgroundColor: '#0070f3',
+                padding: '12px 24px',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 color: 'white',
-                borderRadius: '4px',
+                borderRadius: '8px',
                 textDecoration: 'none',
-                fontSize: '14px'
+                fontSize: '16px',
+                fontWeight: 'bold'
               }}
             >
-              查询用户
+              开始记录 →
             </Link>
           </div>
         </div>
 
         <div style={{
-          padding: '20px',
+          padding: '30px',
           backgroundColor: '#fff',
           border: '1px solid #ddd',
-          borderRadius: '8px'
+          borderRadius: '15px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
-          <h3>🔐 认证状态</h3>
-          <p style={{ color: '#666', marginTop: '10px' }}>
-            您已成功登录，NextAuth 工作正常！
+          <h3 style={{ fontSize: '24px', marginBottom: '15px' }}>📊 数据分析</h3>
+          <p style={{ color: '#666', marginBottom: '20px' }}>
+            查看睡眠趋势分析，获取个性化建议，优化您的睡眠质量
           </p>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <Link
+              href="/analytics"
+              style={{
+                padding: '12px 24px',
+                background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                color: 'white',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                fontSize: '16px',
+                fontWeight: 'bold'
+              }}
+            >
+              查看分析 →
+            </Link>
+          </div>
         </div>
 
         <div style={{
-          padding: '20px',
+          padding: '30px',
           backgroundColor: '#fff',
           border: '1px solid #ddd',
-          borderRadius: '8px'
+          borderRadius: '15px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
-          <h3>📚 API 端点</h3>
-          <ul style={{ marginTop: '10px', paddingLeft: '20px', color: '#666' }}>
-            <li><code>/api/test-db</code> - 数据库连接测试</li>
-            <li><code>/api/test-drizzle</code> - Drizzle ORM 查询</li>
-            <li><code>/api/auth/signin</code> - NextAuth 登录</li>
-            <li><code>/api/auth/signup</code> - 用户注册</li>
-            <li><code>/api/auth/register</code> - 注册接口</li>
-          </ul>
+          <h3 style={{ fontSize: '24px', marginBottom: '15px' }}>💡 智能建议</h3>
+          <p style={{ color: '#666', marginBottom: '20px' }}>
+            基于您的睡眠数据，AI 会为您提供个性化的睡眠改善建议
+          </p>
+          <div style={{
+            padding: '15px',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            borderRadius: '10px',
+            fontSize: '14px'
+          }}>
+            💡 提示：记录至少 3 天的睡眠数据后，您将获得更准确的建议
+          </div>
         </div>
       </div>
     </div>
