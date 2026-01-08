@@ -47,9 +47,17 @@ https://你的项目名.vercel.app/api/create-tables
    - 总记录数、平均睡眠时长、平均睡眠质量
    - 睡眠质量趋势（改善中/下降/稳定）
    - 智能建议（基于历史数据生成）
+   - 睡眠质量趋势图表
    - 详细记录列表
 
-### 步骤 4: 智能建议功能
+### 步骤 4: 导出数据
+1. 在数据分析页面，点击右上角"📥 导出数据"按钮
+2. 系统会自动下载：
+   - CSV格式数据文件（可在Excel中打开）
+   - JSON格式数据文件（便于程序处理）
+3. 数据包含：入睡/起床时间、睡眠质量、睡眠时长、环境因素、备注等
+
+### 步骤 5: 智能建议功能
 - 系统会自动分析您的睡眠模式
 - 提供个性化建议（如：最佳入睡时间、改善建议）
 - 建议至少记录 3 天数据以获得更准确建议
@@ -75,6 +83,8 @@ npm start
 - `POST /api/sleep/record` - 创建睡眠记录
 - `GET /api/sleep/record?userId=xxx` - 获取睡眠记录列表
 - `GET /api/sleep/analysis?userId=xxx&period=week` - 获取睡眠分析
+- `GET /api/sleep/export?userId=xxx&format=csv` - 导出CSV数据
+- `GET /api/sleep/export?userId=xxx&format=json` - 导出JSON数据
 - `POST /api/auth/register` - 用户注册
 - `GET /api/test-db` - 测试数据库连接
 
@@ -93,6 +103,8 @@ npm start
 ✅ 数据持久化存储
 ✅ 睡眠质量分析
 ✅ 智能睡眠建议
+✅ 数据可视化图表
+✅ 数据导出功能（CSV/JSON格式）
 ✅ 响应式设计（支持手机/平板/桌面）
 ✅ 实时数据同步
 ✅ 趋势分析（周/月/年）

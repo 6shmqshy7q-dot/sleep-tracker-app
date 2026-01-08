@@ -26,6 +26,18 @@
 - 环境优化建议
 - 睡眠习惯改善建议
 
+### 📊 数据可视化
+- 睡眠质量趋势图表
+- 彩色进度条显示质量等级
+- 实时数据更新
+- 最近10条记录可视化
+
+### 📥 数据导出
+- 一键导出CSV格式数据
+- 支持JSON格式导出
+- 包含完整睡眠信息
+- 便于外部分析和处理
+
 ### 🔐 用户系统
 - 安全的用户注册/登录
 - 个人数据隔离
@@ -168,6 +180,10 @@ NEXTAUTH_URL=http://localhost:3000
 ### 睡眠分析
 - `GET /api/sleep/analysis?userId=xxx&period=week` - 获取分析数据
 
+### 数据导出
+- `GET /api/sleep/export?userId=xxx&format=csv` - 导出CSV格式数据
+- `GET /api/sleep/export?userId=xxx&format=json` - 导出JSON格式数据
+
 ### 用户认证
 - `POST /api/auth/register` - 用户注册
 - `POST /api/auth/signin` - 用户登录
@@ -238,6 +254,10 @@ NEXTAUTH_URL=http://localhost:3000
 ✅ 现代化技术栈
 ✅ 完善的文档和指南
 ✅ 生产环境部署就绪
+✅ 数据导出功能
+✅ 可视化图表展示
+✅ 智能数据分析
+✅ 响应式设计
 
 ## 📄 许可证
 
