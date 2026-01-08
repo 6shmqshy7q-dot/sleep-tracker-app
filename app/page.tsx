@@ -84,19 +84,36 @@ function AuthContent() {
             邮箱: {session.user?.email}
           </p>
         </div>
-        <button
-          onClick={() => signOut({ callbackUrl: '/' })}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#dc3545',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          退出登录
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <Link
+            href="/settings"
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#667eea',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              textDecoration: 'none',
+              fontWeight: 'bold'
+            }}
+          >
+            ⚙️ 设置
+          </Link>
+          <button
+            onClick={() => signOut({ callbackUrl: '/' })}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#dc3545',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            退出登录
+          </button>
+        </div>
       </div>
 
       <div style={{ display: 'grid', gap: '20px' }}>
