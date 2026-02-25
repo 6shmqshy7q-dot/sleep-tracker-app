@@ -1,11 +1,30 @@
 # Ch7 作业 - 睡眠监测器网站部署报告
 
+## 作业提交内容
+
+### 在线访问链接
+
+https://project-template-student-sepia.vercel.app
+
+### 部署成功截图
+
+![首页截图](./screenshot-homepage.png)
+
+![登录页截图](./screenshot-login.png)
+
+### CNB 分支链接
+
+https://cnb.cool/42edu/42aipr001/project-template-student/-/tree/student-小豪
+
+---
+
 ## 项目信息
 
-- **项目名称**: 智能睡眠监测器
-- **部署时间**: 2026-01-07
+- **项目名称**: 智能睡眠追踪器 Pro
+- **部署时间**: 2026-02-25
 - **项目分支**: student-小豪
 - **仓库地址**: https://cnb.cool/42edu/42aipr001/project-template-student
+- **GitHub 仓库**: https://github.com/6shmqshy7q-dot/sleep-tracker-app
 
 ---
 
@@ -436,14 +455,14 @@ NEXTAUTH_URL=https://app.vercel.app
 
 | 项目 | 状态 | 地址 |
 |------|------|------|
-| 开发版本 | ✅ 本地运行 | http://localhost:3001 |
-| 部署准备 | ✅ 就绪 | Vercel/Cloudflare |
+| 生产环境 | ✅ 已上线 | https://project-template-student-sepia.vercel.app |
 | 代码仓库 | ✅ 已推送 | CNB/GitHub |
 
 ### 5.2 项目访问
 
+- **在线地址**: https://project-template-student-sepia.vercel.app
 - **CNB 仓库**: https://cnb.cool/42edu/42aipr001/project-template-student
-- **GitHub 仓库**: https://github.com/6shmqshy7q-dot/-
+- **GitHub 仓库**: https://github.com/6shmqshy7q-dot/sleep-tracker-app
 - **当前分支**: student-小豪
 
 ### 5.3 后续优化
@@ -471,7 +490,7 @@ NEXTAUTH_URL=https://app.vercel.app
 
 ✅ **构建验证**: 项目构建成功，无错误
 ✅ **代码托管**: 已推送到 CNB 和 GitHub
-✅ **部署准备**: 配置完成，可直接部署
+✅ **部署上线**: 已成功部署到 Vercel
 ✅ **文档编写**: 完整记录部署过程
 
 ### 6.2 技术收获
